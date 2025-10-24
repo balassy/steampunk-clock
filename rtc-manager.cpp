@@ -9,7 +9,7 @@
 
 RTCManager::RTCManager() : _initialized(false) {}
 
-void RTCManager::init(int pinSDA, int pinSCL) {
+void RTCManager::init(int pinSDA, int pinSCL, DateTime &initialDateTime) {
   Wire.begin(pinSDA, pinSCL);
 
   if (!_rtc.begin()) {
@@ -18,10 +18,8 @@ void RTCManager::init(int pinSDA, int pinSCL) {
   }
 
   if (_rtc.lostPower()) {
-    Serial.print(F("RTCManager::init: RTC lost power, setting the time to the compile date/time: "));
-    Serial.println(__DATE__ " " __TIME__);
-
-    _rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    Serial.println(F("RTCManager::init: RTC lost power, setting the time to the initial date and time."));
+    _rtc.adjust(initialDateTime);
   } else {
     Serial.println(F("RTCManager::init: RTC power is OK, using previously set RTC time."));
   }

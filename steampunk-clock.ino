@@ -8,10 +8,12 @@
 #include "config.h"
 
 // Project classes.
+#include "ntp-manager.h"
 #include "rtc-manager.h"
 #include "speed-servo.h"
 #include "status-led.h"
 
+NTPManager ntpManager;
 SpeedServo hourServo;
 SpeedServo minuteServo;
 StatusLed statusLed;
@@ -22,7 +24,8 @@ RTCManager rtc;
 void setup() {
   initSerial();
   initLeds();
-  initNetwork(); 
+  initNetwork();
+  initNTP();
   initRTC();
   initServos();
 
@@ -49,6 +52,26 @@ void loop() {
 
   setHour(now.hour());
   setMinute(now.minute());
+
+  //ntpManager.showTime();
+  NTPDateTime ntpTime;
+  ntpManager.getCurrentTime(ntpTime);
+  Serial.print("NTP time: ");
+  Serial.print(ntpTime.year);
+  Serial.print('/');
+  Serial.print(ntpTime.month);
+  Serial.print('/');
+  Serial.print(ntpTime.day);
+  Serial.print(" ");
+  Serial.print(ntpTime.hour);
+  Serial.print(':');
+  Serial.print(ntpTime.minute);
+  Serial.print(':');
+  Serial.print(ntpTime.second);
+  if (ntpTime.isDST)
+    Serial.println("DST");
+  else
+    Serial.println("standard");
 
   delay(1000);
 }
@@ -95,8 +118,27 @@ void initNetwork() {
   Serial.println(F("initNetwork: Initializing network DONE."));
 }
 
+void initNTP() {
+  ntpManager.init(NTP_TIMEZONE, NTP_SERVER);
+  Serial.println(F("initNTP: Initializing NTP DONE."));
+}
+
 void initRTC() {
-  rtc.init(PIN_RTC_SDA, PIN_RTC_SCL);
+  DateTime initialDateTime;
+
+  // DateTime(F(__DATE__), F(__TIME__))
+  delay(3000); // Wait a bit to ensure NTP time is ready.
+  NTPDateTime ntpTime;
+  ntpManager.getCurrentTime(ntpTime);
+
+  Serial.print(F("initRTC: NTP date/time is: "));
+  printDateTime(ntpTime);
+
+  convertNtpDateTimeToRtcDateTime(ntpTime, initialDateTime);
+  Serial.print(F("initRTC: Initial date/time for RTC is: "));
+  printDateTime(initialDateTime);
+
+  rtc.init(PIN_RTC_SDA, PIN_RTC_SCL, initialDateTime);
   Serial.println(F("initRTC: Initializing RTC DONE."));
 }
 
@@ -138,4 +180,36 @@ void setMinute(int minute) {
   // Map 0-59 minutes to 0-180 degrees, inverting the direction (leftmost position is 0 minute).
   int position = map(minute, 0, 59, 180, 0);
   minuteServo.moveTo(position);
+}
+
+void convertNtpDateTimeToRtcDateTime(const NTPDateTime &ntpDt, DateTime &rtcDt) {
+  rtcDt = DateTime(ntpDt.year, ntpDt.month, ntpDt.day, ntpDt.hour, ntpDt.minute, ntpDt.second);
+} 
+
+void printDateTime(const NTPDateTime &dt) {
+  Serial.print(dt.year);
+  Serial.print('/');
+  Serial.print(dt.month);
+  Serial.print('/');
+  Serial.print(dt.day);
+  Serial.print(" ");
+  Serial.print(dt.hour);
+  Serial.print(':');
+  Serial.print(dt.minute);
+  Serial.print(':');
+  Serial.println(dt.second);
+}
+
+void printDateTime(const DateTime &dt) {
+  Serial.print(dt.year(), DEC);
+  Serial.print('/');
+  Serial.print(dt.month(), DEC);
+  Serial.print('/');
+  Serial.print(dt.day(), DEC);
+  Serial.print(" ");
+  Serial.print(dt.hour(), DEC);
+  Serial.print(':');
+  Serial.print(dt.minute(), DEC);
+  Serial.print(':');
+  Serial.println(dt.second(), DEC);
 }

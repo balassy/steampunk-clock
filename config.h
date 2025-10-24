@@ -7,9 +7,13 @@ const uint8_t PIN_RTC_SCL = D1;      // GPIO5 SCL for RTC
 const uint8_t PIN_SERVO_HOUR = D0;   // GPIO16 for the hour servo
 const uint8_t PIN_SERVO_MINUTE = D5; // GPIO14 for the minute servo
 
-// Hardware settigs.
+// Hardware settings.
 const unsigned long SERIAL_BAUD_RATE = 115200;
 
 // Network configuration.
 const char* WIFI_AP_SSID = "SteampunkClock";  // The name of the wireless network to create if cannot connect using the previously saved credentials.
 const char* WIFI_AP_PASSWORD = "SteamPass!";  // The password required to connect to the wireless network used to configure the network parameters.
+
+// NTP configuration.
+const char* NTP_SERVER = "pool.ntp.org";
+const char* NTP_TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0/3"; // Full list: https://github.com/nayarsystems/posix_tz_db/blob/master/zones.json

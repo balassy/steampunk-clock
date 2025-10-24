@@ -8,7 +8,7 @@ class RTCManager {
   public:
     RTCManager();
 
-    void init(int pinSDA, int pinSCL);
+    void init(int pinSDA, int pinSCL, DateTime &initialDateTime);
 
     DateTime getCurrentTime();
     void setCurrentTime(const DateTime &dt);
