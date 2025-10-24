@@ -5,15 +5,12 @@
 // Third-party libraries.
 #include "RTClib.h"      // RTC library by Adafruit
 
-// Read configuration and secrets.
-#include "config.h"
-
 #include "rtc-manager.h"
 
 RTCManager::RTCManager() : _initialized(false) {}
 
-void RTCManager::init() {
-  Wire.begin(PIN_RTC_SDA, PIN_RTC_SCL);
+void RTCManager::init(int pinSDA, int pinSCL) {
+  Wire.begin(pinSDA, pinSCL);
 
   if (!_rtc.begin()) {
     Serial.println(F("RTCManager::init: Couldn't find RTC"));

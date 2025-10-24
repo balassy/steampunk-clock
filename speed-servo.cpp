@@ -1,9 +1,6 @@
 // Platform libraries.
 #include <Arduino.h>     // To add IntelliSense for platform constants.
 
-// Read configuration and secrets.
-#include "config.h"
-
 #include "speed-servo.h"
 
 const int MOVE_STEP_DELAY_MSEC = 2;

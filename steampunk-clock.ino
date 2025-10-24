@@ -1,6 +1,9 @@
 // Platform libraries.
 #include <Arduino.h>     // To add IntelliSense for platform constants.
 
+// Third-party libraries.
+#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+
 // Read configuration and secrets.
 #include "config.h"
 
@@ -19,6 +22,7 @@ RTCManager rtc;
 void setup() {
   initSerial();
   initLeds();
+  initNetwork(); 
   initRTC();
   initServos();
 
@@ -75,8 +79,24 @@ void initLeds() {
   Serial.println(F("initSerial: Initializing LEDs DONE."));
 }
 
+void initNetwork() {
+  WiFiManager wifiManager;
+  bool isConnected;
+  isConnected = wifiManager.autoConnect(WIFI_AP_SSID, WIFI_AP_PASSWORD);
+
+  if(!isConnected) {
+    Serial.println("initNetwork: Failed to connect, restarting...");
+    ESP.restart();
+  } 
+  else { 
+    Serial.println("initNetwork: Connected successfully to " + String(WIFI_AP_SSID));
+  }
+
+  Serial.println(F("initNetwork: Initializing network DONE."));
+}
+
 void initRTC() {
-  rtc.init();
+  rtc.init(PIN_RTC_SDA, PIN_RTC_SCL);
   Serial.println(F("initRTC: Initializing RTC DONE."));
 }
 

@@ -9,3 +9,7 @@ const uint8_t PIN_SERVO_MINUTE = D5; // GPIO14 for the minute servo
 
 // Hardware settigs.
 const unsigned long SERIAL_BAUD_RATE = 115200;
+
+// Network configuration.
+const char* WIFI_AP_SSID = "SteampunkClock";  // The name of the wireless network to create if cannot connect using the previously saved credentials.
+const char* WIFI_AP_PASSWORD = "SteamPass!";  // The password required to connect to the wireless network used to configure the network parameters.
