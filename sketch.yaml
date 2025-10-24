@@ -12,3 +12,6 @@ profiles:
       parity: none
       stop_bits: "1"
     port: COM7
+    libraries:
+      - RTClib (2.1.4)
+      - Adafruit BusIO (1.17.4)
