@@ -12,6 +12,8 @@
 SpeedServo hourServo;
 SpeedServo minuteServo;
 StatusLed statusLed;
+StatusLed hourLed;
+StatusLed minuteLed;
 RTCManager rtc;
 
 void setup() {
@@ -24,10 +26,7 @@ void setup() {
 }
 
 void loop() {
-  statusLed.turnOn();
-  Serial.println(F("LED is ON"));
-  delay(1000);
-
+  statusLed.toggle();
 
   DateTime now = rtc.getCurrentTime();
   Serial.print(now.year(), DEC);
@@ -41,17 +40,12 @@ void loop() {
   Serial.print(now.minute(), DEC);
   Serial.print(':');
   Serial.println(now.second(), DEC);
+  Serial.print(rtc.getTemperature());
+  Serial.println("ºC");
 
   setHour(now.hour());
   setMinute(now.minute());
 
-  Serial.print(rtc.getTemperature());
-  Serial.println("ºC");
-
-  delay(1000);
-
-  statusLed.turnOff();
-  Serial.println(F("LED is OFF"));
   delay(1000);
 }
 
@@ -62,12 +56,21 @@ void initSerial() {
 }
 
 void initLeds() {
-  statusLed.setPin(PIN_LED);
+  statusLed.setPin(PIN_LED, LOW, HIGH);
   
-  // Turn on the LED for diagnostics.
   statusLed.turnOn();
-  delay(3000);
+  delay(2000);
   statusLed.turnOff();
+  
+  hourLed.setPin(PIN_HOUR_LED, HIGH, LOW);
+  hourLed.turnOn();
+  delay(2000);
+  hourLed.turnOff();
+
+  minuteLed.setPin(PIN_MINUTE_LED, HIGH, LOW);
+  minuteLed.turnOn();
+  delay(2000);
+  minuteLed.turnOff();
 
   Serial.println(F("initSerial: Initializing LEDs DONE."));
 }
@@ -79,14 +82,24 @@ void initRTC() {
 
 void initServos() {
   Serial.println(F("initServos: Initializing hour servo..."));
+  hourLed.turnOn();
   hourServo.setPin(PIN_SERVO_HOUR);
   setHour(23);
+  delay(500);
+  setHour(12);
+  delay(500);
   setHour(0);
+  hourLed.turnOff();
  
   Serial.println(F("initServos: Initializing minute servo..."));
+  minuteLed.turnOn();
   minuteServo.setPin(PIN_SERVO_MINUTE);
   setMinute(59);
+  delay(500);
+  setMinute(30);
+  delay(500); 
   setMinute(0);
+  minuteLed.turnOff(); 
 
   Serial.println(F("initServos: Initializing servos DONE."));
 }
@@ -101,7 +114,7 @@ void setHour(int hour) {
 
 void setMinute(int minute) {
   minute = constrain(minute, 0, 59);
-  
+
   // Map 0-59 minutes to 0-180 degrees, inverting the direction (leftmost position is 0 minute).
   int position = map(minute, 0, 59, 180, 0);
   minuteServo.moveTo(position);
