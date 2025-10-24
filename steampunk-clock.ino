@@ -1,25 +1,22 @@
 // Platform libraries.
 #include <Arduino.h>     // To add IntelliSense for platform constants.
-#include <Wire.h>        // I2C library required by the RTC module.
-
-// Third-party libraries.
-#include "RTClib.h" // RTC library by Adafruit
 
 // Read configuration and secrets.
 #include "config.h"
 
 // Project classes.
 #include "status-led.h"
+#include "rtc-manager.h"
 
 StatusLed statusLed;
-RTC_DS3231 rtc;
+RTCManager rtc;
 
 void setup() {
   initSerial();
   initLeds();
   initRTC();
 
-  Serial.println(F("Setup DONE."));
+  Serial.println(F("setup: DONE."));
 }
 
 void loop() {
@@ -28,7 +25,7 @@ void loop() {
   delay(1000);
 
 
-  DateTime now = rtc.now();
+  DateTime now = rtc.getCurrentTime();
   Serial.print(now.year(), DEC);
   Serial.print('/');
   Serial.print(now.month(), DEC);
@@ -69,21 +66,6 @@ void initLeds() {
 }
 
 void initRTC() {
-  Wire.begin(PIN_RTC_SDA, PIN_RTC_SCL);
-
-  if (!rtc.begin()) {
-    Serial.println(F("initRTC: Couldn't find RTC"));
-    while (1);
-  }
-
-  if (rtc.lostPower()) {
-    Serial.println(F("initRTC: RTC lost power, setting the time!"));
-    // When time needs to be set on a new device, or after a power loss, the
-    // following line sets the RTC to the date & time this sketch was compiled
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  } else {
-    Serial.println(F("initRTC: RTC power is OK, using previously set RTC time."));
-  }
-
+  rtc.init();
   Serial.println(F("initRTC: Initializing RTC DONE."));
 }
