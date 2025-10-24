@@ -5,9 +5,12 @@
 #include "config.h"
 
 // Project classes.
-#include "status-led.h"
 #include "rtc-manager.h"
+#include "speed-servo.h"
+#include "status-led.h"
 
+SpeedServo hourServo;
+SpeedServo minuteServo;
 StatusLed statusLed;
 RTCManager rtc;
 
@@ -15,6 +18,7 @@ void setup() {
   initSerial();
   initLeds();
   initRTC();
+  initServos();
 
   Serial.println(F("setup: DONE."));
 }
@@ -37,6 +41,9 @@ void loop() {
   Serial.print(now.minute(), DEC);
   Serial.print(':');
   Serial.println(now.second(), DEC);
+
+  setHour(now.hour());
+  setMinute(now.minute());
 
   Serial.print(rtc.getTemperature());
   Serial.println("ºC");
@@ -68,4 +75,34 @@ void initLeds() {
 void initRTC() {
   rtc.init();
   Serial.println(F("initRTC: Initializing RTC DONE."));
+}
+
+void initServos() {
+  Serial.println(F("initServos: Initializing hour servo..."));
+  hourServo.setPin(PIN_SERVO_HOUR);
+  setHour(23);
+  setHour(0);
+ 
+  Serial.println(F("initServos: Initializing minute servo..."));
+  minuteServo.setPin(PIN_SERVO_MINUTE);
+  setMinute(59);
+  setMinute(0);
+
+  Serial.println(F("initServos: Initializing servos DONE."));
+}
+
+void setHour(int hour) {
+  hour = constrain(hour, 0, 23);
+
+  // Map 0-23 hours to 0-180 degrees, inverting the direction (leftmost position is 0 hour).
+  int position = map(hour, 0, 23, 180, 0);
+  hourServo.moveTo(position);
+}
+
+void setMinute(int minute) {
+  minute = constrain(minute, 0, 59);
+  
+  // Map 0-59 minutes to 0-180 degrees, inverting the direction (leftmost position is 0 minute).
+  int position = map(minute, 0, 59, 180, 0);
+  minuteServo.moveTo(position);
 }

@@ -3,7 +3,7 @@
 #include <Wire.h>        // I2C library required by the RTC module.
 
 // Third-party libraries.
-#include "RTClib.h" // RTC library by Adafruit
+#include "RTClib.h"      // RTC library by Adafruit
 
 // Read configuration and secrets.
 #include "config.h"
