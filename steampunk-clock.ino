@@ -24,8 +24,6 @@ RTCManager rtc;
 void setup() {
   initSerial();
   initLeds();
-  initNetwork();
-  initNTP();
   initRTC();
   initServos();
 
@@ -74,6 +72,8 @@ void initLeds() {
 }
 
 void initNetwork() {
+  Serial.println(F("initNetwork: Connecting to network..."));
+  
   WiFiManager wifiManager;
   bool isConnected;
   isConnected = wifiManager.autoConnect(WIFI_AP_SSID, WIFI_AP_PASSWORD);
@@ -90,6 +90,7 @@ void initNetwork() {
 }
 
 void initNTP() {
+  Serial.println(F("initNTP: Connecting to NTP server..."));
   ntpManager.init(NTP_TIMEZONE, NTP_SERVER);
   Serial.println(F("initNTP: Initializing NTP DONE."));
 }
@@ -99,6 +100,9 @@ void initRTC() {
 
   if(rtc.isAdjustmentNeeded()) {
     Serial.println(F("initRTC: RTC adjustment is needed, setting the time."));
+
+    initNetwork();
+    initNTP();
 
     Serial.println(F("initRTC: Waiting 3 seconds to ensure NTP time is ready..."));
     delay(3000); 
