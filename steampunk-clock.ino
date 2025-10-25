@@ -21,6 +21,8 @@ StatusLed hourLed;
 StatusLed minuteLed;
 RTCManager rtc;
 
+char formattedDateTime[32];
+
 void setup() {
   initSerial();
   initLeds();
@@ -169,35 +171,23 @@ void convertNtpDateTimeToRtcDateTime(const NTPDateTime &ntpDt, DateTime &rtcDt) 
 } 
 
 void printDateTime(const NTPDateTime &dt) {
-  Serial.print(F("NTP: "));
-  Serial.print(dt.year);
-  Serial.print('/');
-  Serial.print(dt.month);
-  Serial.print('/');
-  Serial.print(dt.day);
-  Serial.print(" ");
-  Serial.print(dt.hour);
-  Serial.print(':');
-  Serial.print(dt.minute);
-  Serial.print(':');
-  Serial.print(dt.second);
-  if (dt.isDST)
-    Serial.println(" DST");
-  else
-    Serial.println(" standard");
+  snprintf(formattedDateTime, sizeof(formattedDateTime), "NTP: %04d.%02d.%02d. %02d:%02d:%02d %s",
+           dt.year, 
+           dt.month, 
+           dt.day,
+           dt.hour, 
+           dt.minute, 
+           dt.second,
+           dt.isDST ? " DST" : "");
 }
 
 void printDateTime(const DateTime &dt) {
-  Serial.print(F("RTC: "));
-  Serial.print(dt.year(), DEC);
-  Serial.print('/');
-  Serial.print(dt.month(), DEC);
-  Serial.print('/');
-  Serial.print(dt.day(), DEC);
-  Serial.print(" ");
-  Serial.print(dt.hour(), DEC);
-  Serial.print(':');
-  Serial.print(dt.minute(), DEC);
-  Serial.print(':');
-  Serial.println(dt.second(), DEC);
+  snprintf(formattedDateTime, sizeof(formattedDateTime), "RTC: %04d.%02d.%02d. %02d:%02d:%02d",
+           dt.year(), 
+           dt.month(), 
+           dt.day(),
+           dt.hour(), 
+           dt.minute(), 
+           dt.second());
+  Serial.println(formattedDateTime);
 }
