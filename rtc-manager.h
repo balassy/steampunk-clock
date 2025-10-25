@@ -15,6 +15,8 @@ class RTCManager {
     float getTemperature();
     bool isAdjustmentNeeded();
 
+    static void printDateTime(const DateTime &dt);
+
   private:
     RTC_DS3231 _rtc;
     bool _initialized;

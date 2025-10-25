@@ -54,3 +54,15 @@ bool RTCManager::isAdjustmentNeeded() {
   }
   return _rtc.lostPower();
 }
+
+void RTCManager::printDateTime(const DateTime &dt) {
+  char formattedDateTime[32];
+  snprintf(formattedDateTime, sizeof(formattedDateTime), "RTC: %04d.%02d.%02d. %02d:%02d:%02d",
+           dt.year(), 
+           dt.month(), 
+           dt.day(),
+           dt.hour(), 
+           dt.minute(), 
+           dt.second());
+  Serial.println(formattedDateTime);
+}

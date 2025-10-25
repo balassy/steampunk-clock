@@ -21,8 +21,6 @@ StatusLed hourLed;
 StatusLed minuteLed;
 RTCManager rtc;
 
-char formattedDateTime[32];
-
 void setup() {
   initSerial();
   initLeds();
@@ -36,7 +34,7 @@ void loop() {
   statusLed.toggle();
 
   DateTime now = rtc.getCurrentTime();
-  printDateTime(now);
+  RTCManager::printDateTime(now);
 
   Serial.print(rtc.getTemperature());
   Serial.println("ºC");
@@ -111,17 +109,17 @@ void initRTC() {
     ntpManager.getCurrentTime(ntpTime);
 
     Serial.print(F("initRTC: NTP time is: "));
-    printDateTime(ntpTime);
+    NTPManager::printDateTime(ntpTime);
 
     Serial.print(F("initRTC: Setting RTC time to NTP time: "));
     DateTime initialDateTime;
     convertNtpDateTimeToRtcDateTime(ntpTime, initialDateTime);
-    printDateTime(initialDateTime);
+    RTCManager::printDateTime(initialDateTime);
     rtc.setCurrentTime(initialDateTime);
   } else {
     Serial.print(F("initRTC: RTC adjustment is NOT needed, keeping the previously set time: "));
     DateTime currentRtcTime = rtc.getCurrentTime();
-    printDateTime(currentRtcTime);
+    RTCManager::printDateTime(currentRtcTime);
   }
   Serial.println(F("initRTC: Initializing RTC DONE."));
 }
@@ -170,25 +168,6 @@ void convertNtpDateTimeToRtcDateTime(const NTPDateTime &ntpDt, DateTime &rtcDt) 
   rtcDt = DateTime(ntpDt.year, ntpDt.month, ntpDt.day, ntpDt.hour, ntpDt.minute, ntpDt.second);
 } 
 
-void printDateTime(const NTPDateTime &dt) {
-  snprintf(formattedDateTime, sizeof(formattedDateTime), "NTP: %04d.%02d.%02d. %02d:%02d:%02d %s",
-           dt.year, 
-           dt.month, 
-           dt.day,
-           dt.hour, 
-           dt.minute, 
-           dt.second,
-           dt.isDST ? " DST" : "");
-  Serial.println(formattedDateTime);
-}
 
-void printDateTime(const DateTime &dt) {
-  snprintf(formattedDateTime, sizeof(formattedDateTime), "RTC: %04d.%02d.%02d. %02d:%02d:%02d",
-           dt.year(), 
-           dt.month(), 
-           dt.day(),
-           dt.hour(), 
-           dt.minute(), 
-           dt.second());
-  Serial.println(formattedDateTime);
-}
+
+

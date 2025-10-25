@@ -39,3 +39,16 @@ void NTPManager::getCurrentTime(NTPDateTime &dt) {
   dt.dayOfWeek = _localTime.tm_wday;           // days since Sunday 0-6
   dt.isDST     = (_localTime.tm_isdst == 1);   // Daylight Saving Time flag
 }
+
+void NTPManager::printDateTime(const NTPDateTime &dt) {
+  char formattedDateTime[32];
+  snprintf(formattedDateTime, sizeof(formattedDateTime), "NTP: %04d.%02d.%02d. %02d:%02d:%02d%s",
+           dt.year, 
+           dt.month, 
+           dt.day,
+           dt.hour, 
+           dt.minute, 
+           dt.second,
+           dt.isDST ? " DST" : "");
+  Serial.println(formattedDateTime);
+}

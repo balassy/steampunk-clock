@@ -19,6 +19,8 @@ class NTPManager {
     NTPManager();
     void init(const char* timezone, const char* server);
     void getCurrentTime(NTPDateTime &dt);
+    
+    static void printDateTime(const NTPDateTime &dt);
 
   private:
     bool _initialized;
