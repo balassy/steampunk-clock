@@ -68,7 +68,7 @@ void initLeds() {
   delay(2000);
   minuteLed.turnOff();
 
-  Serial.println(F("initSerial: Initializing LEDs DONE."));
+  Serial.println(F("initLeds: Initializing LEDs DONE."));
 }
 
 void initNetwork() {
@@ -103,9 +103,6 @@ void initRTC() {
 
     initNetwork();
     initNTP();
-
-    Serial.println(F("initRTC: Waiting 3 seconds to ensure NTP time is ready..."));
-    delay(3000); 
 
     Serial.println(F("initRTC: Fetching current NTP time... "));
     NTPDateTime ntpTime;

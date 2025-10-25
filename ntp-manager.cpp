@@ -7,7 +7,16 @@
 NTPManager::NTPManager() : _initialized(false) {} 
 
 void NTPManager::init(const char* timezone, const char* server) {
+  Serial.println(F("NTPManager::init: Initializing NTP..."));
   configTime(timezone, server);
+  
+  // Wait until time is correctly returned.
+  time_t now;
+  while ((now = time(nullptr)) < 100000) {  // roughly < 1973
+    Serial.println(F("NTPManager::init: Waiting 1 second for NTP time to be ready..."));
+    delay(1000);
+  }
+
   _initialized = true;
   Serial.println(F("NTPManager::init: DONE."));
 }
