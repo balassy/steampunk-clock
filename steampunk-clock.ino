@@ -153,8 +153,8 @@ void initServos() {
 void setHour(int hour) {
   hour = constrain(hour, 0, 23);
 
-  // Map 0-23 hours to 0-180 degrees, inverting the direction (leftmost position is 0 hour).
-  int position = map(hour, 0, 23, 180, 0);
+  // Map 0-11 hours to 0-180 degrees, inverting the direction (leftmost position is 0 hour).
+  int position = map(hour % 12, 0, 11, 180, 0);
   hourServo.moveTo(position);
 }
 
