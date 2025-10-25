@@ -179,6 +179,7 @@ void printDateTime(const NTPDateTime &dt) {
            dt.minute, 
            dt.second,
            dt.isDST ? " DST" : "");
+  Serial.println(formattedDateTime);
 }
 
 void printDateTime(const DateTime &dt) {
