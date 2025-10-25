@@ -8,6 +8,7 @@
 #include "config.h"
 
 // Project classes.
+#include "reboot-manager.h"
 #include "ntp-manager.h"
 #include "rtc-manager.h"
 #include "speed-servo.h"
@@ -24,6 +25,16 @@ RTCManager rtc;
 void setup() {
   initSerial();
   initLeds();
+
+  if (RebootManager::isReset())
+  {
+    Serial.println(F("setup: Detected reset."));
+  } else {
+    Serial.println(F("setup: Detected power-up boot."));
+  }
+  RebootManager::markSetupComplete();
+  
+
   initRTC();
   initServos();
 
