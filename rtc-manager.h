@@ -8,11 +8,12 @@ class RTCManager {
   public:
     RTCManager();
 
-    void init(int pinSDA, int pinSCL, DateTime &initialDateTime);
+    void init(int pinSDA, int pinSCL);
 
     DateTime getCurrentTime();
     void setCurrentTime(const DateTime &dt);
     float getTemperature();
+    bool isAdjustmentNeeded();
 
   private:
     RTC_DS3231 _rtc;

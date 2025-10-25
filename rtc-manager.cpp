@@ -9,19 +9,12 @@
 
 RTCManager::RTCManager() : _initialized(false) {}
 
-void RTCManager::init(int pinSDA, int pinSCL, DateTime &initialDateTime) {
+void RTCManager::init(int pinSDA, int pinSCL) {
   Wire.begin(pinSDA, pinSCL);
 
   if (!_rtc.begin()) {
     Serial.println(F("RTCManager::init: Couldn't find RTC"));
     while (1);
-  }
-
-  if (_rtc.lostPower()) {
-    Serial.println(F("RTCManager::init: RTC lost power, setting the time to the initial date and time."));
-    _rtc.adjust(initialDateTime);
-  } else {
-    Serial.println(F("RTCManager::init: RTC power is OK, using previously set RTC time."));
   }
 
   _initialized = true;
@@ -52,4 +45,12 @@ float RTCManager::getTemperature() {
       return 0.0f;
   }
   return _rtc.getTemperature();
+}
+
+bool RTCManager::isAdjustmentNeeded() {
+  if (!_initialized) {
+    Serial.println(F("RTCManager::isAdjustmentNeeded: RTC not initialized, returning false!"));
+    return false;
+  }
+  return _rtc.lostPower();
 }

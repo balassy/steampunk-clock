@@ -36,42 +36,13 @@ void loop() {
   statusLed.toggle();
 
   DateTime now = rtc.getCurrentTime();
-  Serial.print(now.year(), DEC);
-  Serial.print('/');
-  Serial.print(now.month(), DEC);
-  Serial.print('/');
-  Serial.print(now.day(), DEC);
-  Serial.print(" ");
-  Serial.print(now.hour(), DEC);
-  Serial.print(':');
-  Serial.print(now.minute(), DEC);
-  Serial.print(':');
-  Serial.println(now.second(), DEC);
+  printDateTime(now);
+
   Serial.print(rtc.getTemperature());
   Serial.println("ºC");
 
   setHour(now.hour());
   setMinute(now.minute());
-
-  //ntpManager.showTime();
-  NTPDateTime ntpTime;
-  ntpManager.getCurrentTime(ntpTime);
-  Serial.print("NTP time: ");
-  Serial.print(ntpTime.year);
-  Serial.print('/');
-  Serial.print(ntpTime.month);
-  Serial.print('/');
-  Serial.print(ntpTime.day);
-  Serial.print(" ");
-  Serial.print(ntpTime.hour);
-  Serial.print(':');
-  Serial.print(ntpTime.minute);
-  Serial.print(':');
-  Serial.print(ntpTime.second);
-  if (ntpTime.isDST)
-    Serial.println("DST");
-  else
-    Serial.println("standard");
 
   delay(1000);
 }
@@ -124,21 +95,31 @@ void initNTP() {
 }
 
 void initRTC() {
-  DateTime initialDateTime;
+  rtc.init(PIN_RTC_SDA, PIN_RTC_SCL);
 
-  // DateTime(F(__DATE__), F(__TIME__))
-  delay(3000); // Wait a bit to ensure NTP time is ready.
-  NTPDateTime ntpTime;
-  ntpManager.getCurrentTime(ntpTime);
+  if(rtc.isAdjustmentNeeded()) {
+    Serial.println(F("initRTC: RTC adjustment is needed, setting the time."));
 
-  Serial.print(F("initRTC: NTP date/time is: "));
-  printDateTime(ntpTime);
+    Serial.println(F("initRTC: Waiting 3 seconds to ensure NTP time is ready..."));
+    delay(3000); 
 
-  convertNtpDateTimeToRtcDateTime(ntpTime, initialDateTime);
-  Serial.print(F("initRTC: Initial date/time for RTC is: "));
-  printDateTime(initialDateTime);
+    Serial.println(F("initRTC: Fetching current NTP time... "));
+    NTPDateTime ntpTime;
+    ntpManager.getCurrentTime(ntpTime);
 
-  rtc.init(PIN_RTC_SDA, PIN_RTC_SCL, initialDateTime);
+    Serial.print(F("initRTC: NTP time is: "));
+    printDateTime(ntpTime);
+
+    Serial.print(F("initRTC: Setting RTC time to NTP time: "));
+    DateTime initialDateTime;
+    convertNtpDateTimeToRtcDateTime(ntpTime, initialDateTime);
+    printDateTime(initialDateTime);
+    rtc.setCurrentTime(initialDateTime);
+  } else {
+    Serial.print(F("initRTC: RTC adjustment is NOT needed, keeping the previously set time: "));
+    DateTime currentRtcTime = rtc.getCurrentTime();
+    printDateTime(currentRtcTime);
+  }
   Serial.println(F("initRTC: Initializing RTC DONE."));
 }
 
@@ -187,6 +168,7 @@ void convertNtpDateTimeToRtcDateTime(const NTPDateTime &ntpDt, DateTime &rtcDt) 
 } 
 
 void printDateTime(const NTPDateTime &dt) {
+  Serial.print(F("NTP: "));
   Serial.print(dt.year);
   Serial.print('/');
   Serial.print(dt.month);
@@ -197,10 +179,15 @@ void printDateTime(const NTPDateTime &dt) {
   Serial.print(':');
   Serial.print(dt.minute);
   Serial.print(':');
-  Serial.println(dt.second);
+  Serial.print(dt.second);
+  if (dt.isDST)
+    Serial.println(" DST");
+  else
+    Serial.println(" standard");
 }
 
 void printDateTime(const DateTime &dt) {
+  Serial.print(F("RTC: "));
   Serial.print(dt.year(), DEC);
   Serial.print('/');
   Serial.print(dt.month(), DEC);
