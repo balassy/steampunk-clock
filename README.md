@@ -8,6 +8,7 @@ Install the following libraries:
 - [Adafruit BusIO by Adafruit](https://github.com/adafruit/Adafruit_BusIO)
 - [RTCLib by Adafruit](https://github.com/adafruit/RTClib)
 - [WiFiManager by tzapu](https://github.com/tzapu/WiFiManager)
+- [OneButton by Matthias Hertel](https://github.com/mathertel/OneButton)
 
 The exact versions of these libraries used to create this code is visible in the [sketch.yaml](./sketch.yaml) file.
 

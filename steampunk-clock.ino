@@ -3,6 +3,7 @@
 
 // Third-party libraries.
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+#include <OneButton.h>   // https://github.com/mathertel/OneButton
 
 // Read configuration and secrets.
 #include "config.h"
@@ -14,6 +15,8 @@
 #include "speed-servo.h"
 #include "status-led.h"
 
+#define BUTTON_ACTIVE_LOW true
+
 NTPManager ntpManager;
 SpeedServo hourServo;
 SpeedServo minuteServo;
@@ -21,10 +24,14 @@ StatusLed statusLed;
 StatusLed hourLed;
 StatusLed minuteLed;
 RTCManager rtc;
+OneButton settingsButton;
+
+unsigned long lastClockUpdateMsec = 0;
 
 void setup() {
   initSerial();
   initLeds();
+  initButton();
 
   if (RebootManager::isReset())
   {
@@ -33,7 +40,6 @@ void setup() {
     Serial.println(F("setup: Detected power-up boot."));
   }
   RebootManager::markSetupComplete();
-  
 
   initRTC();
   initServos();
@@ -42,18 +48,15 @@ void setup() {
 }
 
 void loop() {
-  statusLed.toggle();
+  // IMPORTANT! Do NOT use delay() in the main loop when using OneButton, as it would prevent the button from being handled!
+  settingsButton.tick();
 
-  DateTime now = rtc.getCurrentTime();
-  RTCManager::printDateTime(now);
-
-  Serial.print(rtc.getTemperature());
-  Serial.println("ºC");
-
-  setHour(now.hour());
-  setMinute(now.minute());
-
-  delay(1000);
+  // Manually detecting the number of milliseconds passed to avoid using delay() which would block button handling.
+  unsigned long currentMsec = millis();
+  if(currentMsec - lastClockUpdateMsec >= CLOCK_UPDATE_INTERVAL_MSEC) {
+    lastClockUpdateMsec = currentMsec;
+    updateClock();
+  }
 }
 
 void initSerial() {
@@ -63,6 +66,8 @@ void initSerial() {
 }
 
 void initLeds() {
+  Serial.println(F("initLeds: Initializing LEDs..."));
+
   statusLed.setPin(PIN_LED, LOW, HIGH);
   
   statusLed.turnOn();
@@ -82,8 +87,19 @@ void initLeds() {
   Serial.println(F("initLeds: Initializing LEDs DONE."));
 }
 
+void initButton() {
+  Serial.println(F("initButton: Initializing settings button..."));
+
+  settingsButton.setup(PIN_BUTTON, INPUT_PULLUP, BUTTON_ACTIVE_LOW);
+  settingsButton.attachClick(onButtonClicked);
+  settingsButton.attachDoubleClick(onButtonDoubleClicked);
+  settingsButton.attachLongPressStop(onButtonLongClicked);
+
+  Serial.println(F("initButton: Initializing settings button DONE."));
+}
+
 void initNetwork() {
-  Serial.println(F("initNetwork: Connecting to network..."));
+  Serial.println(F("initNetwork: Initializing network..."));
   
   WiFiManager wifiManager;
   bool isConnected;
@@ -157,6 +173,33 @@ void initServos() {
   minuteLed.turnOff(); 
 
   Serial.println(F("initServos: Initializing servos DONE."));
+}
+
+
+void updateClock() {
+  Serial.println(F("updateClock: Updating clock..."));
+
+  statusLed.toggle();
+
+  DateTime now = rtc.getCurrentTime();
+  RTCManager::printDateTime(now);
+
+  setHour(now.hour());
+  setMinute(now.minute());
+
+  Serial.println(F("updateClock: Updating clock DONE."));
+}
+
+static void onButtonClicked() {
+  Serial.println("onButtonClicked: Single clicked detected!");
+}
+
+static void onButtonDoubleClicked() {
+  Serial.println("onButtonDoubleClicked: Double clicked detected!");
+}
+
+static void onButtonLongClicked() {
+  Serial.println("onButtonLongClicked: Long clicked detected!");
 }
 
 void setHour(int hour) {

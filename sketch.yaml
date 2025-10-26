@@ -16,3 +16,4 @@ profiles:
       - RTClib (2.1.4)
       - Adafruit BusIO (1.17.4)
       - WiFiManager (2.0.17)
+      - OneButton (2.6.1)
