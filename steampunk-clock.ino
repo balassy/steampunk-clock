@@ -12,12 +12,14 @@
 #include "reboot-manager.h"
 #include "ntp-manager.h"
 #include "rtc-manager.h"
+#include "selector-switch.h"
 #include "speed-servo.h"
 #include "status-led.h"
 
 #define BUTTON_ACTIVE_LOW true
 
 NTPManager ntpManager;
+SelectorSwitch selectorSwitch;
 SpeedServo hourServo;
 SpeedServo minuteServo;
 StatusLed statusLed;
@@ -28,10 +30,18 @@ OneButton settingsButton;
 
 unsigned long lastClockUpdateMsec = 0;
 
+enum Mode {
+  ALL_LIGHTS_OFF = 0,
+  BACKLIGHTS_ONLY,
+  AMBIENT_LIGHTS_ONLY,
+  ALL_LIGHTS_ON
+};
+
 void setup() {
   initSerial();
   initLeds();
   initButton();
+  initSwitch();
 
   if (RebootManager::isReset())
   {
@@ -50,6 +60,7 @@ void setup() {
 void loop() {
   // IMPORTANT! Do NOT use delay() in the main loop when using OneButton, as it would prevent the button from being handled!
   settingsButton.tick();
+  selectorSwitch.tick();
 
   // Manually detecting the number of milliseconds passed to avoid using delay() which would block button handling.
   unsigned long currentMsec = millis();
@@ -96,6 +107,19 @@ void initButton() {
   settingsButton.attachLongPressStop(onButtonLongClicked);
 
   Serial.println(F("initButton: Initializing settings button DONE."));
+}
+
+void initSwitch() {
+  Serial.println(F("setup: Initializing selector switch..."));
+  selectorSwitch.init(); 
+
+  selectorSwitch.attachOnPositionChanged([](int position){
+    Serial.print(F("Selector switch position changed to: "));
+    Serial.println(position);
+    onModeChanged(static_cast<Mode>(position));
+  });
+
+  Serial.println(F("setup: Initializing selector switch DONE."));
 }
 
 void initNetwork() {
@@ -200,6 +224,39 @@ static void onButtonDoubleClicked() {
 
 static void onButtonLongClicked() {
   Serial.println("onButtonLongClicked: Long clicked detected!");
+}
+
+static void onModeChanged(Mode newMode) {
+  //TODO: Fill in the implementation to change lighting based on mode.
+  switch (newMode)
+  {
+    case ALL_LIGHTS_OFF:
+      Serial.println("onModeChanged: ALL_LIGHTS_OFF selected.");
+      hourLed.turnOff();
+      minuteLed.turnOff();
+      break;
+    
+    case BACKLIGHTS_ONLY:
+      Serial.println("onModeChanged: BACKLIGHTS_ONLY selected.");
+      hourLed.turnOn();
+      minuteLed.turnOff();
+      break;
+
+    case AMBIENT_LIGHTS_ONLY:
+      Serial.println("onModeChanged: AMBIENT_LIGHTS_ONLY selected.");
+      hourLed.turnOff();
+      minuteLed.turnOn();
+      break;
+
+    case ALL_LIGHTS_ON:
+      Serial.println("onModeChanged: ALL_LIGHTS_ON selected.");
+      hourLed.turnOn();
+      minuteLed.turnOn();
+      break;
+
+    default:
+      break;
+  }
 }
 
 void setHour(int hour) {

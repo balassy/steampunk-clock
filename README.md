@@ -6,6 +6,7 @@ Install the [Arduino Maker Workshop](https://marketplace.visualstudio.com/items?
 
 Install the following libraries:
 - [Adafruit BusIO by Adafruit](https://github.com/adafruit/Adafruit_BusIO)
+- [Adafruit PCF8574 by Adafruit](https://github.com/adafruit/Adafruit_PCF8574)
 - [RTCLib by Adafruit](https://github.com/adafruit/RTClib)
 - [WiFiManager by tzapu](https://github.com/tzapu/WiFiManager)
 - [OneButton by Matthias Hertel](https://github.com/mathertel/OneButton)
