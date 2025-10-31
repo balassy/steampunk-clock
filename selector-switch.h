@@ -4,9 +4,6 @@
 #include <Arduino.h>
 #include <Adafruit_PCF8574.h> // https://github.com/adafruit/Adafruit_PCF8574
 
-#define POSITION_BUTTON_1_PIN 0
-#define POSITION_BUTTON_2_PIN 1
-#define POSITION_BUTTON_3_PIN 2
 #define BUTTON_LONG_PRESS_MS 100
 #define STATE_UPDATED_MANUALLY 0
 
@@ -16,7 +13,7 @@ class SelectorSwitch {
   public:
     SelectorSwitch();
 
-    void init();
+    void init(Adafruit_PCF8574 &expander);
     void tick();
     void attachOnPositionChanged(OnPositionChangedCallbackFunction callbackFn);
 

@@ -2,21 +2,18 @@
 #include <Adafruit_PCF8574.h> // https://github.com/adafruit/Adafruit_PCF8574
 #include <OneButton.h>        // https://github.com/mathertel/OneButton
 
+#include "config.h"
 #include "selector-switch.h"
 
 SelectorSwitch::SelectorSwitch() : _initialized(false) {}
 
-void SelectorSwitch::init() {
+void SelectorSwitch::init(Adafruit_PCF8574 &expander) {
   Serial.println(F("SelectorSwitch::init: Initializing selector switch..."));
 
-  if (!_expander.begin(0x20, &Wire)) {
-    Serial.println(F("SelectorSwitch::init: Couldn't find PCF8574 extender board on the bus, boot halted!"));
-    while (1);
-  }
-
-  _expander.pinMode(POSITION_BUTTON_1_PIN, INPUT_PULLUP);
-  _expander.pinMode(POSITION_BUTTON_2_PIN, INPUT_PULLUP);
-  _expander.pinMode(POSITION_BUTTON_3_PIN, INPUT_PULLUP);
+  _expander = expander; 
+  _expander.pinMode(EXPANDER_PIN_POSITION_BUTTON_1, INPUT_PULLUP);
+  _expander.pinMode(EXPANDER_PIN_POSITION_BUTTON_2, INPUT_PULLUP);
+  _expander.pinMode(EXPANDER_PIN_POSITION_BUTTON_3, INPUT_PULLUP);
 
   _positionButton1.setup(STATE_UPDATED_MANUALLY, true);
   _positionButton1.setPressMs(BUTTON_LONG_PRESS_MS);
@@ -44,13 +41,13 @@ void SelectorSwitch::tick() {
     return;
   }
 
-  bool positionButton1State = (_expander.digitalRead(POSITION_BUTTON_1_PIN) == LOW);
+  bool positionButton1State = (_expander.digitalRead(EXPANDER_PIN_POSITION_BUTTON_1) == LOW);
   _positionButton1.tick(positionButton1State);
 
-  bool positionButton2State = (_expander.digitalRead(POSITION_BUTTON_2_PIN) == LOW);
+  bool positionButton2State = (_expander.digitalRead(EXPANDER_PIN_POSITION_BUTTON_2) == LOW);
   _positionButton2.tick(positionButton2State);
 
-  bool positionButton3State = (_expander.digitalRead(POSITION_BUTTON_3_PIN) == LOW);
+  bool positionButton3State = (_expander.digitalRead(EXPANDER_PIN_POSITION_BUTTON_3) == LOW);
   _positionButton3.tick(positionButton3State);
 }
 
