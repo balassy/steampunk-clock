@@ -39,3 +39,4 @@ jobs:
         with:
           project-type: sketch
           verbose: true
+          compliance: strict
