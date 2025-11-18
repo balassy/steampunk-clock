@@ -33,11 +33,7 @@ jobs:
               version: 2.1.4
             - name: WiFiManager
               version: 2.0.17
-          enable-deltas-report: true
           enable-warnings-report: true
-
-      - name: Report deltas
-        uses: arduino/report-size-deltas@v1
 
       - name: Lint
         uses: arduino/arduino-lint-action@v2
@@ -45,9 +41,3 @@ jobs:
           project-type: sketch
           verbose: true
           compliance: strict
-
-      - name: Upload reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: sketches-reports
-          path: sketches-reports
