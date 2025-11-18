@@ -1,6 +1,8 @@
 # Steampunk Clock
 
-[![Build](https://github.com/balassy/steampunk-clock/actions/workflows/compile.yml/badge.svg)](https://github.com/balassy/steampunk-clock/actions/workflows/compile.yml)
+![Arduino](https://img.shields.io/badge/Arduino-00979D?logo=Arduino&logoColor=white) [![Build](https://github.com/balassy/steampunk-clock/actions/workflows/compile.yml/badge.svg)](https://github.com/balassy/steampunk-clock/actions/workflows/compile.yml)
+
+
 
 ## Getting Started
 
@@ -19,7 +21,7 @@ The exact versions of these libraries used to create this code is visible in the
 
 Check the settings in the [config.h](./config.h) file.
 
-**IMPORTANT!** Make sure to set a custom password in the `WIFI_AP_PASSWORD` field!
+**IMPORTANT FOR SECURITY!** Make sure to set a custom password in the `WIFI_AP_PASSWORD` field!
 
 ## Connecting to WiFi
 
