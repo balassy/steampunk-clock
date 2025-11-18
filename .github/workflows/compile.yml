@@ -19,7 +19,7 @@ jobs:
           platforms: |
             - name: esp8266:esp8266
               version: 3.1.2
-              index_url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+              source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
           sketch-paths: |
             - steampunk-clock.ino
           libraries: |
