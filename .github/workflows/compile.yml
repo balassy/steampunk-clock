@@ -35,7 +35,7 @@ jobs:
               version: 2.0.17
           enable-warnings-report: true
 
-      - name: Lint
+      - name: Lint sketch
         uses: arduino/arduino-lint-action@v2
         with:
           project-type: sketch
