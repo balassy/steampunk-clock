@@ -53,5 +53,8 @@ Common pitfalls to check
 - Unchecked assumptions about I2C device presence — the code currently halts if PCF8574 isn't found; any change here must be conservative and documented.
 - Network operations that can cause reboot loops if not guarded (e.g., `initNetwork` calling `ESP.restart()` on failure).
 
+Build and CI
+- When a build-related change is made (library versions, board profile), ensure the `compile.yml` workflow is updated accordingly.
+
 ---
 Keep this file up-to-date when the board profile, pin wiring or library versions change.
