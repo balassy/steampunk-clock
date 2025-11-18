@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Compile sketches
+      - name: Compile sketch
         uses: arduino/compile-sketches@v1
         with:
           fqbn: esp8266:esp8266:d1_mini
@@ -33,3 +33,8 @@ jobs:
               version: 2.1.4
             - name: WiFiManager
               version: 2.0.17
+
+      - name: Lint
+        uses: arduino/arduino-lint-action@v2
+        with:
+          project-type: sketch
