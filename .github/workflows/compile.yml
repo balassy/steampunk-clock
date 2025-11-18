@@ -1,0 +1,42 @@
+name: Compile sketch
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Compile for ESP8266
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Arduino CLI
+        uses: arduino/arduino-cli-action@v1
+        with:
+          update-index: false
+
+      - name: Configure ESP8266 platform index
+        run: |
+          arduino-cli core update-index --additional-urls https://arduino.esp8266.com/stable/package_esp8266com_index.json
+
+      - name: Install ESP8266 core
+        run: |
+          arduino-cli core install esp8266:esp8266@3.1.2
+
+      - name: Install required libraries
+        run: |
+          arduino-cli lib update-index
+          arduino-cli lib install "RTClib@2.1.4"
+          arduino-cli lib install "Adafruit BusIO@1.17.4"
+          arduino-cli lib install "WiFiManager@2.0.17"
+          arduino-cli lib install "OneButton@2.6.1"
+          arduino-cli lib install "Adafruit PCF8574@1.1.2"
+
+      - name: Compile sketch
+        run: |
+          arduino-cli compile --fqbn esp8266:esp8266:d1_mini "${{ github.workspace }}/steampunk-clock.ino"
