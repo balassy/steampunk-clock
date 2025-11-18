@@ -45,3 +45,9 @@ jobs:
           project-type: sketch
           verbose: true
           compliance: strict
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: sketches-reports
+          path: sketches-reports
