@@ -56,10 +56,11 @@ void SelectorSwitch::attachOnPositionChanged(OnPositionChangedCallbackFunction c
 }
 
 void SelectorSwitch::_onPositionSelected(void *ctx) {
-  Serial.println("SelectorSwitch::_onPositionSelected");
+  Serial.print("SelectorSwitch::_onPositionSelected, position: ");
   OnPositionSelectedContext *params = static_cast<OnPositionSelectedContext *>(ctx);
   SelectorSwitch* self = params->instance;
   int position = params->position;
+  Serial.println(position);
 
   self->_position = position;
 

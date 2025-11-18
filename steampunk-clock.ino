@@ -11,6 +11,7 @@
 #include "config.h"
 
 // Project classes.
+#include "beep-manager.h"
 #include "reboot-manager.h"
 #include "ntp-manager.h"
 #include "rtc-manager.h"
@@ -21,6 +22,7 @@
 #define BUTTON_ACTIVE_LOW true
 
 Adafruit_PCF8574 expander;
+BeepManager beepManager;
 NTPManager ntpManager;
 SelectorSwitch selectorSwitch;
 SpeedServo hourServo;
@@ -46,7 +48,7 @@ void setup() {
   initLeds();
   initButton();
   initSwitch();
-
+  
   if (RebootManager::isReset())
   {
     Serial.println(F("setup: Detected reset."));
@@ -54,9 +56,10 @@ void setup() {
     Serial.println(F("setup: Detected power-up boot."));
   }
   RebootManager::markSetupComplete();
-
+  
   initRTC();
   initServos();
+  initBuzzer();
 
   Serial.println(F("setup: DONE."));
 }
@@ -67,6 +70,8 @@ void loop() {
   settingsButton.tick(settingsButtonState);
 
   selectorSwitch.tick();
+
+  beepManager.loop();
 
   // Manually detecting the number of milliseconds passed to avoid using delay() which would block button handling.
   unsigned long currentMsec = millis();
@@ -113,6 +118,12 @@ void initLeds() {
   minuteLed.turnOff();
 
   Serial.println(F("initLeds: Initializing LEDs DONE."));
+}
+
+void initBuzzer() {
+  Serial.println(F("initBuzzer: Initializing buzzer..."));
+  beepManager.init(PIN_BUZZER);
+  Serial.println(F("initBuzzer: Initializing buzzer DONE."));
 }
 
 void initButton() {
@@ -243,6 +254,7 @@ static void onButtonDoubleClicked() {
 
 static void onButtonLongClicked() {
   Serial.println("onButtonLongClicked: Long clicked detected!");
+  beepManager.beep(100);
 }
 
 static void onModeChanged(Mode newMode) {

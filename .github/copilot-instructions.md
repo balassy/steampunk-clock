@@ -6,7 +6,7 @@ Purpose
 Project summary (short)
 - Platform: ESP8266 (Wemos D1 Mini profile is used).
 - Main sketch: `steampunk-clock.ino`.
-- Key hardware: RTC module (I2C), PCF8574 I2C expander at 0x20, two servos (hour/minute), status LEDs, buzzer, selector switch, settings button.
+- Key hardware: RTC module (I2C), PCF8574 I2C expander at 0x20, two servos (hour/minute), status LEDs, active buzzer, selector switch, settings button.
 - Important config: `config.h` defines pin mappings, WIFI AP defaults, NTP timezone/server and clock update interval.
 - Libraries (versions in `sketch.yaml`): RTCLib, Adafruit BusIO, Adafruit PCF8574, WiFiManager, OneButton.
 
