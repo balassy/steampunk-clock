@@ -33,6 +33,7 @@ jobs:
               version: 2.1.4
             - name: WiFiManager
               version: 2.0.17
+          enable-deltas-report: true
 
       - name: Lint
         uses: arduino/arduino-lint-action@v2
