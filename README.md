@@ -1,5 +1,7 @@
 # Steampunk Clock
 
+[![Build](https://github.com/balassy/steampunk-clock/actions/workflows/compile.yml/badge.svg)](https://github.com/balassy/steampunk-clock/actions/workflows/compile.yml)
+
 ## Getting Started
 
 Install the [Arduino Maker Workshop](https://marketplace.visualstudio.com/items?itemName=TheLastOutpostWorkshop.arduino-maker-workshop) Visual Studio Code extension.
