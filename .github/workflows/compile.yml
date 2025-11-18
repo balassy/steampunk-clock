@@ -5,7 +5,7 @@ on:
   - pull_request
 
 jobs:
-  compile-sketches:
+  compile-sketch:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,3 +38,4 @@ jobs:
         uses: arduino/arduino-lint-action@v2
         with:
           project-type: sketch
+          verbose: true
