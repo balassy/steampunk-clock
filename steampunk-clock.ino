@@ -104,17 +104,17 @@ void initLeds() {
   statusLed.setPin(PIN_LED, LOW, HIGH);
   
   statusLed.turnOn();
-  delay(2000);
+  delay(500);
   statusLed.turnOff();
   
   hourLed.setPin(PIN_HOUR_LED, HIGH, LOW);
   hourLed.turnOn();
-  delay(2000);
+  delay(500);
   hourLed.turnOff();
 
   minuteLed.setPin(PIN_MINUTE_LED, HIGH, LOW);
   minuteLed.turnOn();
-  delay(2000);
+  delay(500);
   minuteLed.turnOff();
 
   Serial.println(F("initLeds: Initializing LEDs DONE."));
@@ -210,10 +210,16 @@ void initServos() {
   hourLed.turnOn();
   hourServo.setPin(PIN_SERVO_HOUR);
   setHour(23);
-  delay(500);
-  setHour(12);
-  delay(500);
+  delay(2000);
   setHour(0);
+  delay(2000);
+  setHour(5);
+  delay(2000);
+
+  for (int h = 0; h < 12; h++) {
+    setHour(h);
+    delay(500);
+  }
   hourLed.turnOff();
  
   Serial.println(F("initServos: Initializing minute servo..."));
@@ -291,14 +297,21 @@ static void onModeChanged(Mode newMode) {
 }
 
 void setHour(int hour) {
+  Serial.print(F("setHour: Setting hour to "));
+  Serial.println(hour);
+
   hour = constrain(hour, 0, 23);
 
-  // Map 0-11 hours to 0-180 degrees, inverting the direction (leftmost position is 0 hour).
-  int position = map(hour % 12, 0, 11, 180, 0);
+  // The full display is about 97 degree.
+  // Map 0-11 hours to 41-159 degrees, inverting the direction (leftmost position is 0 hour).
+  int position = map(hour % 12, 0, 11, 159, 41);
   hourServo.moveTo(position);
 }
 
 void setMinute(int minute) {
+  Serial.print(F("setMinute: Setting minute to "));
+  Serial.println(minute);
+
   minute = constrain(minute, 0, 59);
 
   // Map 0-59 minutes to 0-180 degrees, inverting the direction (leftmost position is 0 minute).
