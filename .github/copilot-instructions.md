@@ -1,14 +1,14 @@
 ## GitHub Copilot instructions for the "steampunk-clock" repository
 
 Purpose
-- Provide concise, actionable guidance for GitHub Copilot and other assistant agents working in this repository. The project is firmware for an ESP32 (ESP32-WROOM-32) controlling servos, an RTC, a PCF8574 I2C expander and a few peripherals — safety and non-blocking behavior are paramount.
+- Provide concise, actionable guidance for GitHub Copilot and other assistant agents working in this repository. The project is firmware for an ESP32 (ESP32-WROOM-32) controlling servos, an RTC, and a few peripherals — safety and non-blocking behavior are paramount.
 
 Project summary (short)
 - Platform: ESP32 (ESP32-WROOM-32 profile is used).
 - Main sketch: `steampunk-clock.ino`.
-- Key hardware: RTC module (I2C), PCF8574 I2C expander at 0x20, two servos (hour/minute), status LEDs, active buzzer, selector switch, settings button.
+- Key hardware: RTC module (I2C), Ptwo servos (hour/minute), status LEDs, active buzzer, selector switch, settings button.
 - Important config: `config.h` defines pin mappings, WIFI AP defaults, NTP timezone/server and clock update interval.
-- Libraries (versions in `sketch.yaml`): RTCLib, Adafruit BusIO, Adafruit PCF8574, WiFiManager, OneButton.
+- Libraries (versions in `sketch.yaml`): RTCLib, Adafruit BusIO, WiFiManager, OneButton, ESP32Servo.
 
 Read first
 - `steampunk-clock.ino` — main program flow and non-blocking loop structure.
@@ -50,7 +50,7 @@ Tone & response format for Copilot
 
 Common pitfalls to check
 - Blocking delays in `loop()` and anywhere `OneButton` or other event-handling is used.
-- Unchecked assumptions about I2C device presence — the code currently halts if PCF8574 isn't found; any change here must be conservative and documented.
+- Unchecked assumptions about I2C device presence — the code currently halts if RTC module isn't found; any change here must be conservative and documented.
 - Network operations that can cause reboot loops if not guarded (e.g., `initNetwork` calling `ESP.restart()` on failure).
 
 Build and CI

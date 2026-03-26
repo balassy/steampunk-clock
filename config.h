@@ -21,14 +21,15 @@
   inline constexpr uint8_t PIN_RTC_SCL = 22;      // GPIO22 SCL for RTC
   inline constexpr uint8_t PIN_SERVO_HOUR = 16;   // GPIO16 hour servo
   inline constexpr uint8_t PIN_SERVO_MINUTE = 17; // GPIO17 minute servo
-  inline constexpr uint8_t PIN_BUZZER = 0;        // GPIO0 active buzzer (+)
+  inline constexpr uint8_t PIN_BUZZER = 20;       // GPIO20 active buzzer (+)
 #endif
 
-// Pin configuration for I2C expander (PCF8574).
-inline constexpr uint8_t EXPANDER_PIN_POSITION_BUTTON_1 = 0;
-inline constexpr uint8_t EXPANDER_PIN_POSITION_BUTTON_2 = 1;
-inline constexpr uint8_t EXPANDER_PIN_POSITION_BUTTON_3 = 2;
-inline constexpr uint8_t EXPANDER_PIN_SETTINGS_BUTTON = 3; // Button for resetting network settings. Connected to PCF8574 pin P3.
+inline constexpr uint8_t PIN_SETTINGS_BUTTON = 4; // GPIO4Button for resetting network settings. 
+
+inline constexpr uint8_t PIN_SWITCH_MODE_1 = 25;
+inline constexpr uint8_t PIN_SWITCH_MODE_2 = 26;
+inline constexpr uint8_t PIN_SWITCH_MODE_3 = 27;
+
 
 // Hardware settings.
 inline constexpr unsigned long SERIAL_BAUD_RATE = 115200;

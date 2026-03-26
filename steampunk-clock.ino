@@ -4,7 +4,6 @@
 // Third-party libraries.
 #include <WiFiManager.h>      // https://github.com/tzapu/WiFiManager
 #include <OneButton.h>        // https://github.com/mathertel/OneButton
-#include <Adafruit_PCF8574.h> // https://github.com/adafruit/Adafruit_PCF8574
 #include <Wire.h>             // I2C library
 
 // Read configuration and secrets.
@@ -21,7 +20,6 @@
 
 #define BUTTON_ACTIVE_LOW true
 
-Adafruit_PCF8574 expander;
 BeepManager beepManager;
 NTPManager ntpManager;
 SelectorSwitch selectorSwitch;
@@ -44,7 +42,6 @@ enum Mode {
 
 void setup() {
   initSerial();
-  initExpander();
   initLeds();
   initButton();
   initSwitch();
@@ -66,9 +63,7 @@ void setup() {
 
 void loop() {
   // IMPORTANT! Do NOT use delay() in the main loop when using OneButton, as it would prevent the button from being handled!
-  bool settingsButtonState = (expander.digitalRead(EXPANDER_PIN_SETTINGS_BUTTON) == LOW);
-  settingsButton.tick(settingsButtonState);
-
+  settingsButton.tick();
   selectorSwitch.tick();
 
   beepManager.loop();
@@ -85,17 +80,6 @@ void initSerial() {
   Serial.begin(SERIAL_BAUD_RATE);
   Serial.println();
   Serial.println(F("initSerial: Initializing serial connection DONE."));
-}
-
-void initExpander() {
-  Serial.println(F("initExpander: Initializing I2C expander..."));
-
-  if (!expander.begin(0x20, &Wire)) {
-    Serial.println(F("initExpander: Couldn't find PCF8574 extender board on the bus, boot halted!"));
-    while (1);
-  }
-
-  Serial.println(F("initExpander: Initializing I2C expander DONE."));
 }
 
 void initLeds() {
@@ -129,9 +113,7 @@ void initBuzzer() {
 void initButton() {
   Serial.println(F("initButton: Initializing settings button..."));
 
-  expander.pinMode(EXPANDER_PIN_SETTINGS_BUTTON, INPUT_PULLUP);
-
-  settingsButton.setup(STATE_UPDATED_MANUALLY, BUTTON_ACTIVE_LOW);
+  settingsButton.setup(PIN_SETTINGS_BUTTON, INPUT_PULLUP, BUTTON_ACTIVE_LOW);
   settingsButton.attachClick(onButtonClicked);
   settingsButton.attachDoubleClick(onButtonDoubleClicked);
   settingsButton.attachLongPressStop(onButtonLongClicked);
@@ -141,7 +123,7 @@ void initButton() {
 
 void initSwitch() {
   Serial.println(F("setup: Initializing selector switch..."));
-  selectorSwitch.init(expander); 
+  selectorSwitch.init(); 
 
   selectorSwitch.attachOnPositionChanged([](int position){
     Serial.print(F("Selector switch position changed to: "));

@@ -48,8 +48,6 @@ jobs:
           libraries: |
             - name: Adafruit BusIO
               version: 1.17.4
-            - name: Adafruit PCF8574
-              version: 1.1.2
             - name: OneButton
               version: 2.6.1
             - name: RTClib
