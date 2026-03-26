@@ -8,7 +8,10 @@ NTPManager::NTPManager() : _initialized(false) {}
 
 void NTPManager::init(const char* timezone, const char* server) {
   Serial.println(F("NTPManager::init: Initializing NTP..."));
-  configTime(timezone, server);
+
+  configTime(0, 0, server);
+  setenv("TZ", timezone, 1); // 1 = overwrite existing value
+  tzset();
   
   // Wait until time is correctly returned.
   time_t now;

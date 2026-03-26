@@ -22,6 +22,7 @@ class RebootManager {
   static void _clearMarker();  
   static BootReason _getBootReason();
   static void _printBootReason(BootReason reason);
+  static String _getResetReasonString();
 };
 
 #endif /* REBOOT_MANAGER_H */

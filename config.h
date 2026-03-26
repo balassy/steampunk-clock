@@ -1,14 +1,28 @@
 #pragma once
 
 // Pin configuration for the Wemos D1 Mini board.
-inline constexpr uint8_t PIN_LED = D4;          // GPIO2 onboard LED
-inline constexpr uint8_t PIN_HOUR_LED = D6;     // GPIO12 hour display LED (+)
-inline constexpr uint8_t PIN_MINUTE_LED = D7;   // GPIO13 minute display LED (+)
-inline constexpr uint8_t PIN_RTC_SDA = D2;      // GPIO4 SDA for RTC
-inline constexpr uint8_t PIN_RTC_SCL = D1;      // GPIO5 SCL for RTC
-inline constexpr uint8_t PIN_SERVO_HOUR = D0;   // GPIO16 hour servo
-inline constexpr uint8_t PIN_SERVO_MINUTE = D5; // GPIO14 minute servo
-inline constexpr uint8_t PIN_BUZZER = D3;       // GPIO0 active buzzer (+)
+#ifdef ARDUINO_ARCH_ESP8266
+  inline constexpr uint8_t PIN_LED = D4;          // GPIO2 onboard LED
+  inline constexpr uint8_t PIN_HOUR_LED = D6;     // GPIO12 hour display LED (+)
+  inline constexpr uint8_t PIN_MINUTE_LED = D7;   // GPIO13 minute display LED (+)
+  inline constexpr uint8_t PIN_RTC_SDA = D2;      // GPIO4 SDA for RTC
+  inline constexpr uint8_t PIN_RTC_SCL = D1;      // GPIO5 SCL for RTC
+  inline constexpr uint8_t PIN_SERVO_HOUR = D0;   // GPIO16 hour servo
+  inline constexpr uint8_t PIN_SERVO_MINUTE = D5; // GPIO14 minute servo
+  inline constexpr uint8_t PIN_BUZZER = D3;       // GPIO0 active buzzer (+)
+#endif
+
+// Pin configuration for the ESP32-WROOM-32 board.
+#ifdef ARDUINO_ARCH_ESP32
+  inline constexpr uint8_t PIN_LED = 2;           // GPIO2 onboard LED
+  inline constexpr uint8_t PIN_HOUR_LED = 12;     // GPIO12 hour display LED (+)
+  inline constexpr uint8_t PIN_MINUTE_LED = 13;   // GPIO13 minute display LED (+)
+  inline constexpr uint8_t PIN_RTC_SDA = 21;      // GPIO21 SDA for RTC
+  inline constexpr uint8_t PIN_RTC_SCL = 22;      // GPIO22 SCL for RTC
+  inline constexpr uint8_t PIN_SERVO_HOUR = 16;   // GPIO16 hour servo
+  inline constexpr uint8_t PIN_SERVO_MINUTE = 17; // GPIO17 minute servo
+  inline constexpr uint8_t PIN_BUZZER = 0;        // GPIO0 active buzzer (+)
+#endif
 
 // Pin configuration for I2C expander (PCF8574).
 inline constexpr uint8_t EXPANDER_PIN_POSITION_BUTTON_1 = 0;

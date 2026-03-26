@@ -24,8 +24,8 @@ void SpeedServo::moveTo(int newPosition) {
   // Get current servo position (0-180).
   int currentPosition = _servo.read();
 
-  Serial.println(F("SpeedServo::moveTo: Moving servo from position ") + String(currentPosition) +
-                 F(" to position ") + String(newPosition));
+  Serial.println(String(F("SpeedServo::moveTo: Moving servo from position ")) + String(currentPosition) +
+                 String(F(" to position ")) + String(newPosition));
 
   // Unknown current position -> write target directly
   if (currentPosition < 0 || currentPosition > 180) {
