@@ -1,22 +1,16 @@
 // Platform libraries.
 #include <Arduino.h>        // To add IntelliSense for platform constants.
-
-#ifdef ARDUINO_ARCH_ESP8266
-  #include <user_interface.h>      // To access RTC memory functions.
-  #define RTC_MEMORY_ADDRESS 64    // Arbitrary RTC memory address (0–127 safe range).
-#endif
-#ifdef ARDUINO_ARCH_ESP32
-  #include <Preferences.h>
-  #define PREFS_NAMESPACE_NAME "reboot_manager"
-  #define PREFS_KEY_NAME "reboot_marker"
-  #define READ_ONLY true
-  #define READ_WRITE false
-  static Preferences preferences;
-#endif
+#include <Preferences.h>
 
 #include "reboot-manager.h"
 
 #define MARKER_VALUE 0xACCE55ED  // Arbitrary marker value to indicate setup completion.
+#define PREFS_NAMESPACE_NAME "reboot_manager"
+#define PREFS_KEY_NAME "reboot_marker"
+#define READ_ONLY true
+#define READ_WRITE false
+
+static Preferences preferences;
 
 bool RebootManager::isReset() {
   BootReason reason = _getBootReason();
@@ -62,10 +56,6 @@ BootReason RebootManager::_getBootReason() {
 }
 
 String RebootManager::_getResetReasonString() {
-#ifdef ARDUINO_ARCH_ESP8266
-  return ESP.getResetReason();
-#endif
-#ifdef ARDUINO_ARCH_ESP32
   esp_reset_reason_t reason = esp_reset_reason();
   switch (reason) {
     case ESP_RST_POWERON:    return "Power On";
@@ -80,45 +70,25 @@ String RebootManager::_getResetReasonString() {
     case ESP_RST_SDIO:       return "SDIO";
     default:                 return "Unknown";
   }
-#endif
 }
 
 void RebootManager::_saveMarker() {
-  #ifdef ARDUINO_ARCH_ESP8266
-    uint32 marker = MARKER_VALUE;
-    system_rtc_mem_write(RTC_MEMORY_ADDRESS, &marker, sizeof(marker));
-  #endif
-  #ifdef ARDUINO_ARCH_ESP32
-    preferences.begin(PREFS_NAMESPACE_NAME, READ_WRITE);
-    preferences.putUInt(PREFS_KEY_NAME, MARKER_VALUE);
-    preferences.end();
-  #endif  
+  preferences.begin(PREFS_NAMESPACE_NAME, READ_WRITE);
+  preferences.putUInt(PREFS_KEY_NAME, MARKER_VALUE);
+  preferences.end();
 }
 
 bool RebootManager::_hasMarker() {
-  #ifdef ARDUINO_ARCH_ESP8266
-    uint32 marker = 0;
-    system_rtc_mem_read(RTC_MEMORY_ADDRESS, &marker, sizeof(marker));
-    return (marker == MARKER_VALUE);
-  #endif
-  #ifdef ARDUINO_ARCH_ESP32
-    preferences.begin(PREFS_NAMESPACE_NAME, READ_ONLY);
-    bool result = (preferences.getUInt(PREFS_KEY_NAME, 0) == MARKER_VALUE);
-    preferences.end();
-    return result;
-  #endif
+  preferences.begin(PREFS_NAMESPACE_NAME, READ_ONLY);
+  bool result = (preferences.getUInt(PREFS_KEY_NAME, 0) == MARKER_VALUE);
+  preferences.end();
+  return result;
 }
 
 void RebootManager::_clearMarker() {
-  #ifdef ARDUINO_ARCH_ESP8266
-    uint32 marker = 0;
-    system_rtc_mem_write(RTC_MEMORY_ADDRESS, &marker, sizeof(marker));
-  #endif
-  #ifdef ARDUINO_ARCH_ESP32
-    preferences.begin(PREFS_NAMESPACE_NAME, READ_WRITE);
-    preferences.remove(PREFS_KEY_NAME);
-    preferences.end();
-  #endif  
+  preferences.begin(PREFS_NAMESPACE_NAME, READ_WRITE);
+  preferences.remove(PREFS_KEY_NAME);
+  preferences.end();
 }
 
 void RebootManager::_printBootReason(BootReason reason) {
