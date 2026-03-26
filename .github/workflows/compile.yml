@@ -38,7 +38,7 @@ jobs:
       - name: Compile sketch for ESP32
         uses: arduino/compile-sketches@v1
         with:
-          fqbn: esp32:esp32:ESP32
+          fqbn: esp32:esp32:esp32
           platforms: |
             - name: esp32:esp32
               version: 3.3.7
