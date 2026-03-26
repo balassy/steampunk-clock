@@ -1,8 +1,8 @@
 {
   "port": "COM7",
-  "configuration": "UploadSpeed=921600,CPUFreq=240,FlashFreq=80,FlashMode=qio,FlashSize=4M,PartitionScheme=default,DebugLevel=none,PSRAM=disabled,LoopCore=1,EventsCore=1,EraseFlash=none,JTAGAdapter=default,ZigbeeMode=default",
+  "configuration": "led=2,baud=115200,xtal=80,eesz=4M2M,dbg=Disabled,lvl=None____,ip=lm2f,vt=flash,exception=disabled,stacksmash=disabled,wipe=none,ssl=all,mmu=3232,non32xfer=fast",
   "output": "build",
-  "board": "esp32:esp32:esp32",
+  "board": "esp8266:esp8266:nodemcuv2",
   "programmer": "esptool",
   "useProgrammer": false,
   "optimize_for_debug": false,

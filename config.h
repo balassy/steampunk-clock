@@ -1,6 +1,6 @@
 #pragma once
 
-// Pin configuration for the Wemos D1 Mini board.
+// Pin configuration for the NodeMCU board.
 #ifdef ARDUINO_ARCH_ESP8266
   inline constexpr uint8_t PIN_LED = D4;          // GPIO2 onboard LED
   inline constexpr uint8_t PIN_HOUR_LED = D6;     // GPIO12 hour display LED (+)

@@ -15,7 +15,7 @@ jobs:
       - name: Compile sketch for ESP8266
         uses: arduino/compile-sketches@v1
         with:
-          fqbn: esp8266:esp8266:d1_mini
+          fqbn: esp8266:esp8266:nodemcuv2
           platforms: |
             - name: esp8266:esp8266
               version: 3.1.2
@@ -25,8 +25,6 @@ jobs:
           libraries: |
             - name: Adafruit BusIO
               version: 1.17.4
-            - name: Adafruit PCF8574
-              version: 1.1.2
             - name: OneButton
               version: 2.6.1
             - name: RTClib
