@@ -6,7 +6,7 @@
 
 ### Components 🔩
 
-- Wemos D1 Mini microcontroller (ESP8266)
+- ESP32-WROOM-32 microcontroller (ESP32)
 - PCF8574 I2C expander module 
 - DS3231 RTC module + LIR2032 rechargable 3.6V battery
 - 2× SG90 servo motors

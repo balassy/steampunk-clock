@@ -1,10 +1,10 @@
 ## GitHub Copilot instructions for the "steampunk-clock" repository
 
 Purpose
-- Provide concise, actionable guidance for GitHub Copilot and other assistant agents working in this repository. The project is firmware for an ESP8266 (Wemos D1 Mini) controlling servos, an RTC, a PCF8574 I2C expander and a few peripherals — safety and non-blocking behavior are paramount.
+- Provide concise, actionable guidance for GitHub Copilot and other assistant agents working in this repository. The project is firmware for an ESP32 (ESP32-WROOM-32) controlling servos, an RTC, a PCF8574 I2C expander and a few peripherals — safety and non-blocking behavior are paramount.
 
 Project summary (short)
-- Platform: ESP8266 (Wemos D1 Mini profile is used).
+- Platform: ESP32 (ESP32-WROOM-32 profile is used).
 - Main sketch: `steampunk-clock.ino`.
 - Key hardware: RTC module (I2C), PCF8574 I2C expander at 0x20, two servos (hour/minute), status LEDs, active buzzer, selector switch, settings button.
 - Important config: `config.h` defines pin mappings, WIFI AP defaults, NTP timezone/server and clock update interval.
@@ -23,7 +23,7 @@ How to behave (high level)
 - Use the repository's style: `inline constexpr` for constants and `F("...")` for constant Serial strings.
 
 Operating constraints and safety
-- This is firmware for an ESP8266 running servos and external hardware. Avoid changes that can cause permanent hardware damage (e.g., wrong PWM ranges, continuous servo movement beyond mechanical stops).
+- This is firmware for an ESP32 running servos and external hardware. Avoid changes that can cause permanent hardware damage (e.g., wrong PWM ranges, continuous servo movement beyond mechanical stops).
 - The main loop intentionally avoids `delay()` to keep `OneButton` and other event handling responsive — preserve that approach.
 - Serial output is used for debugging; keep helpful prints under `#ifdef` or guard them when making noisy changes.
 - Changing pin assignments requires updating `config.h` and documenting the change in the PR.
@@ -32,7 +32,7 @@ Coding style & best practices (repo-specific)
 - Use `F("...")` for constant strings sent to `Serial` (already used in the code).
 - Prefer `inline constexpr` constants (pattern used in `config.h`).
 - Keep heavy operations off the main loop or run them in small incremental steps (non-blocking pattern). If a long operation is required, document why and how interrupts and button handling are preserved.
-- Avoid dynamic allocations in tight loops; prefer stack or static objects for resource-constrained ESP8266.
+- Avoid dynamic allocations in tight loops; prefer stack or static objects for resource-constrained ESP32.
 
 Allowed changes without explicit owner confirmation
 - Documentation, README improvements, and tests that don't alter hardware wiring or runtime behavior.
