@@ -175,8 +175,7 @@ void initRTC() {
     NTPManager::printDateTime(ntpTime);
 
     Serial.print(F("initRTC: Setting RTC time to NTP time: "));
-    DateTime initialDateTime;
-    convertNtpDateTimeToRtcDateTime(ntpTime, initialDateTime);
+    DateTime initialDateTime = convertNtpDateTimeToRtcDateTime(ntpTime);
     RTCManager::printDateTime(initialDateTime);
     rtc.setCurrentTime(initialDateTime);
   } else {
@@ -301,8 +300,8 @@ void setMinute(int minute) {
   minuteServo.moveTo(position);
 }
 
-void convertNtpDateTimeToRtcDateTime(const NTPDateTime &ntpDt, DateTime &rtcDt) {
-  rtcDt = DateTime(ntpDt.year, ntpDt.month, ntpDt.day, ntpDt.hour, ntpDt.minute, ntpDt.second);
+DateTime convertNtpDateTimeToRtcDateTime(const NTPDateTime &ntpDt) {
+  return DateTime(ntpDt.year, ntpDt.month, ntpDt.day, ntpDt.hour, ntpDt.minute, ntpDt.second);
 } 
 
 
